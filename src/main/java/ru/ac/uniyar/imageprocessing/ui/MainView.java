@@ -1,5 +1,6 @@
 package ru.ac.uniyar.imageprocessing.ui;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -21,6 +22,7 @@ import ru.ac.uniyar.imageprocessing.ui.components.ImageField;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Route
@@ -164,15 +166,32 @@ public class MainView extends VerticalLayout {
     }
 
     private boolean hasInvalidParams() {
-        if (processType.doesNotNeedParams()) return false;
-        return params.getChildren().filter(it -> it instanceof NumberField).map(it -> ((NumberField) it).getValue())
-                .anyMatch(it -> it == null || it < 0) || params.getChildren().filter(it -> it instanceof NumberField)
-                .map(it -> ((NumberField) it).getValue()).findAny().isEmpty();
+        return switch(processType) {
+            case LOGARITHM -> ((NumberField) params.getChildren().toList().get(1)).getValue() == null ||
+                    ((NumberField) params.getChildren().toList().get(1)).getValue() < 0;
+            case POWER ->  {
+                List<Component> paramFields = params.getChildren().toList().get(1).getChildren().toList();
+                for (Component parameter : paramFields) {
+                    NumberField paramField = (NumberField) parameter;
+                    if (paramField.getValue() == null || paramField.getValue() < 0) yield true;
+                }
+                yield false;
+            }
+            default -> false;
+        };
     }
 
     private List<Double> getParams() {
-        if (processType.doesNotNeedParams()) return new ArrayList<>();
-        return new ArrayList<>(params.getChildren().filter(it -> it instanceof NumberField)
-                .map(it -> ((NumberField) it).getValue()).toList());
+        ArrayList<Double> result = new ArrayList();
+        switch(processType) {
+            case LOGARITHM -> result.add(((NumberField) params.getChildren().toList().get(0)).getValue());
+            case POWER ->  {
+                List<Component> paramFields = params.getChildren().toList().get(1).getChildren().toList();
+                for (Component parameter : paramFields)
+                    result.add(((NumberField) parameter).getValue());
+            }
+            default -> new ArrayList<>();
+        };
+        return result;
     }
 }
