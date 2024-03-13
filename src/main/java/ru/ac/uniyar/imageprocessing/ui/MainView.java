@@ -98,18 +98,18 @@ public class MainView extends VerticalLayout {
 
             ImageContainer resultImage = ImageProcessor.processImage(imageContainer, processType, getParams());
 
-            showProcessResult(imageContainer.getValue(), resultImage.getValue());
+            showProcessResult(imageContainer.getValue(), resultImage.getValue(), imageContainer.getCutType());
         }
     }
 
-    private void showProcessResult(byte[] before, byte[] result) {
+    private void showProcessResult(byte[] before, byte[] result, String imageType) {
         logger.info("Отображение результата");
 
         processResult.removeAll();
         processResult.getStyle().set("width", "100%");
 
-        Image beforeImage = new Image(new StreamResource("before.jpg", () -> new ByteArrayInputStream(before)), "before");
-        Image resultImage = new Image(new StreamResource("result.jpg", () -> new ByteArrayInputStream(result)), "result");
+        Image beforeImage = new Image(new StreamResource("before.".concat(imageType), () -> new ByteArrayInputStream(before)), "before");
+        Image resultImage = new Image(new StreamResource("result.".concat(imageType), () -> new ByteArrayInputStream(result)), "result");
         beforeImage.getStyle().set("width", "48vw");
         resultImage.getStyle().set("width", "48vw");
 

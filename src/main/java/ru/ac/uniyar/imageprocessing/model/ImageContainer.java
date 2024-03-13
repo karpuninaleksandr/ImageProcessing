@@ -35,4 +35,8 @@ public class ImageContainer {
             e.printStackTrace();
         }
     }
+
+    public String getCutType() {
+        return type.replace("image/", "");
+    }
 }
