@@ -184,7 +184,7 @@ public class MainView extends VerticalLayout {
     private List<Double> getParams() {
         ArrayList<Double> result = new ArrayList();
         switch(processType) {
-            case LOGARITHM -> result.add(((NumberField) params.getChildren().toList().get(0)).getValue());
+            case LOGARITHM -> result.add(((NumberField) params.getChildren().toList().get(1)).getValue());
             case POWER ->  {
                 List<Component> paramFields = params.getChildren().toList().get(1).getChildren().toList();
                 for (Component parameter : paramFields)
